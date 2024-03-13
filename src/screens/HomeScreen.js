@@ -1,8 +1,8 @@
-import { View, Text, Platform } from 'react-native'
+import { View, Text, Platform, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
-import { Bars3CenterLeftIcon } from 'react-native-heroicons/outline';
+import { Bars3CenterLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 
 const ios = Platform.OS === 'ios';
 export default function HomeScreen() {
@@ -16,6 +16,9 @@ export default function HomeScreen() {
                     <Text className="text-white text-3xl font-bold">
                         GrubShare
                     </Text>
+                    <TouchableOpacity>
+                        <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
+                    </TouchableOpacity>
                 </View>
             </SafeAreaView>
         </View>
