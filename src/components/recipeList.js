@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 var {width, height} = Dimensions.get('window');
 
 export default function recipeList({dish, data}) {
-    let recipeName = 'Spaghetti Bolognese';
+    let recipeName = 'Spaghetti Carbonara';
     const navigation = useNavigation();
   return (
     <View className="mb-8 space-y-4">
