@@ -7,7 +7,7 @@ var {width, height} = Dimensions.get('window');
 
 export default function TrendingRecipes({data}) {
   const navigation = useNavigation();
-  const handleClick = ()=>{
+  const handleClick = (item)=>{
     navigation.navigate('Recipe', item);
   }
   return (
@@ -28,7 +28,7 @@ export default function TrendingRecipes({data}) {
 
 const RecipeCard = ({item, handleClick})=>{
   return (
-    <TouchableWithoutFeedback onPress={handleClick}>
+    <TouchableWithoutFeedback onPress={()=> handleClick(item)}>
       <Image source={require('../assets/carbonara.jpg')}
       style={{
         width: width*0.6,
