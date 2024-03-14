@@ -33,8 +33,13 @@ export default function HomeScreen() {
             >
                 {/* Trending Recipes Carousel */}
                 <TrendingRecipes data={trending} />
+
                 {/* New Recipes Row */}
                 <RecipeList dish="New" data={newRecipe} />
+
+                {/* Top Rated Recipes Row */}
+                <RecipeList dish="Top Rated" data={newRecipe} />
+
             </ScrollView>
         </View>
     )
