@@ -35,10 +35,10 @@ export default function HomeScreen() {
                 <TrendingRecipes data={trending} />
 
                 {/* New Recipes Row */}
-                <RecipeList dish="New" data={newRecipe} />
+                <RecipeList title="New" data={newRecipe} />
 
                 {/* Top Rated Recipes Row */}
-                <RecipeList dish="Top Rated" data={newRecipe} />
+                <RecipeList title="Top Rated" data={newRecipe} />
 
             </ScrollView>
         </View>

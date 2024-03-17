@@ -14,6 +14,8 @@ import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { HeartIcon } from "react-native-heroicons/solid";
 import { styles, theme } from "../theme";
 import { LinearGradient } from "expo-linear-gradient";
+import Ingredients from "../components/ingredients";
+import RecipeList from '../components/recipeList';
 
 var { width, height } = Dimensions.get("window");
 const ios = Platform.OS === "ios";
@@ -23,6 +25,8 @@ export default function RecipeScreen() {
   const { params: item } = useRoute();
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
+  const [ingredients , setIngredients] = useState([1,2,3,4,5]);
+  const [similarRecipes , setSimilarRecipes] = useState([1,2,3,4,5]);
   let recipeName = "Spaghetti Carbonara";
   useEffect(() => {
     //Call the Receip details API
@@ -84,15 +88,33 @@ export default function RecipeScreen() {
           <Text className="text-neutral-400 font-semibold text-base text-center">
             Italian
           </Text>
+          <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full">
+            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+              <Text className="text-white font-semibold text-lg">kcal</Text>
+              <Text className="text-neutral-300 text-lg">655</Text>
+            </View>
+            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+              <Text className="text-white font-semibold text-lg">fat</Text>
+              <Text className="text-neutral-300 text-lg">31g</Text>
+            </View>
+            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+              <Text className="text-white font-semibold text-lg">carbs</Text>
+              <Text className="text-neutral-300 text-lg">66g</Text>
+            </View>
+            <View className="px-2 items-center">
+              <Text className="text-white font-semibold text-lg">protein</Text>
+              <Text className="text-neutral-300 text-lg">32g</Text>
+            </View>
+          </View>
         {/* Ingredients */}
-          <Text className="text-neutral-400 mx-4 tracking-wide">
-          100g pancetta • 50g pecorino cheese • 50g parmesan • 3 large eggs • 350g spaghetti • 2 plump garlic cloves, peeled and left whole • 50g unsalted butter • sea salt and freshly ground black pepper
-          </Text>
+        <Ingredients navigation={navigation} ingredients={ingredients}/>
         {/* Description */}
           <Text className="text-neutral-400 mx-4 tracking-wide">
           Discover how to make traditional spaghetti carbonara. This classic Italian pasta dish combines a silky cheese sauce with crisp pancetta and black pepper.
           </Text>
       </View>
+      {/* Similar Recipes*/}
+      <RecipeList title="Similar Recipes" hideSeeAll={true} data={similarRecipes} />
     </ScrollView>
   );
 }
