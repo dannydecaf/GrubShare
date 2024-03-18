@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -13,18 +13,29 @@ import {
   MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import { styles } from "../theme";
-import TrendingRecipes from "../components/trendingRecipes";
+import RandomRecipes from "../components/randomRecipes";
 import RecipeList from "../components/recipeList";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
+import { fetchRandomRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 export default function HomeScreen() {
-  const [trending, setTrending] = useState([1, 2, 3]);
+  const [random, setRandom] = useState([1, 2, 3]);
   const [newRecipe, setNewRecipe] = useState([1, 2, 3]);
   const [bestRated, setBestRated] = useState([1, 2, 3]);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(()=>{
+    getRandomRecipes();
+  },[])
+
+  const getRandomRecipes = async ()=>{
+    const data = await fetchRandomRecipes();
+    console.log('got random recipes: ',data)
+  }
+
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar and logo */}
@@ -48,8 +59,8 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
         >
-          {/* Trending Recipes Carousel */}
-          <TrendingRecipes data={trending} />
+          {/* Random Recipes Carousel */}
+          <RandomRecipes data={random} />
 
           {/* New Recipes Row */}
           <RecipeList title="New" data={newRecipe} />

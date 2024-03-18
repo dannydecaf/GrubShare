@@ -5,14 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 var {width, height} = Dimensions.get('window');
 
-export default function TrendingRecipes({data}) {
+export default function RandomRecipes({data}) {
   const navigation = useNavigation();
   const handleClick = (item)=>{
     navigation.navigate('Recipe', item);
   }
   return (
     <View className="mb-8">
-      <Text className="text-white text-xl mx-4 mb-5">Trending</Text>
+      <Text className="text-white text-xl mx-4 mb-5">Random</Text>
       <Carousel
       data={data}
       renderItem={({item})=> <RecipeCard item={item} handleClick={handleClick} />}
