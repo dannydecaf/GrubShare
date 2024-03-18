@@ -6,12 +6,14 @@ import { Bars3CenterLeftIcon, MagnifyingGlassIcon } from 'react-native-heroicons
 import { styles } from '../theme';
 import TrendingRecipes from '../components/trendingRecipes';
 import RecipeList from '../components/recipeList';
+import { useNavigation } from '@react-navigation/native';
 
 const ios = Platform.OS === 'ios';
 export default function HomeScreen() {
     const [trending, setTrending] = useState([1,2,3]);
     const [newRecipe, setNewRecipe] = useState([1,2,3]);
     const [bestRated, setBestRated] = useState([1,2,3]);
+    const navigation = useNavigation();
     return (
         <View className="flex-1 bg-neutral-800">
             {/* search bar and logo */}
@@ -22,7 +24,7 @@ export default function HomeScreen() {
                     <Text className="text-white text-3xl font-bold">
                         <Text style={styles.text}>GrubShare</Text>
                     </Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=> navigation.navigate('Search')}>
                         <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -38,7 +40,7 @@ export default function HomeScreen() {
                 <RecipeList title="New" data={newRecipe} />
 
                 {/* Top Rated Recipes Row */}
-                <RecipeList title="Top Rated" data={newRecipe} />
+                <RecipeList title="Top Rated" data={bestRated} />
 
             </ScrollView>
         </View>

@@ -29,7 +29,7 @@ export default function RecipeScreen() {
   const [similarRecipes , setSimilarRecipes] = useState([1,2,3,4,5]);
   let recipeName = "Spaghetti Carbonara";
   useEffect(() => {
-    //Call the Receip details API
+    //Call the Recipe details API
   }, [item]);
 
   return (
