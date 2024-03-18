@@ -5,7 +5,7 @@ import { apiKey } from '../src/constants';
 // Endpoints
 
 const apiBaseUrl = 'https://api.spoonacular.com';
-const randomRecipesEndpoint = `${apiBaseUrl}/recipes/random?api_key=${apiKey}`
+const randomRecipesEndpoint = `${apiBaseUrl}/recipes/random?apiKey=${apiKey}`
 
 const apiCall = async (endpoint, params)=>{
     const options = {
