@@ -25,6 +25,7 @@ export default function HomeScreen() {
   const [newRecipe, setNewRecipe] = useState([1, 2, 3]);
   const [bestRated, setBestRated] = useState([1, 2, 3]);
   const [loading, setLoading] = useState(true);
+  const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(()=>{
@@ -49,13 +50,27 @@ export default function HomeScreen() {
     }
   }
 
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+    console.log("Menu visibility toggled:", menuVisible);
+  };
+
+  const handleLogout = () => {
+    console.log("Log Out button pressed");
+    // Redirect to the Login screen
+    navigation.navigate("Login");
+  };
+
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar and logo */}
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
-          <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
+          {/* Hamburger menu with dropdown */}
+          <TouchableOpacity onPress={toggleMenu}>
+            <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
+          </TouchableOpacity>
           <Text className="text-white text-3xl font-bold">
             <Text style={styles.text}>GrubShare</Text>
           </Text>
@@ -63,6 +78,29 @@ export default function HomeScreen() {
             <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
+
+        {/* Dropdown menu for logout */}
+        {menuVisible && (
+          <View
+            style={[
+              styles.background,
+              {
+                position: "absolute",
+                top: ios ? 80 : 100,
+                left: 10,
+                right: 10,
+                backgroundColor: "rgba(51, 51, 51, 0.9)",
+                padding: 15,
+                borderRadius: 8,
+                zIndex: 10, // Ensure this is on top of other elements
+              },
+            ]}
+          >
+            <TouchableOpacity onPress={handleLogout}>
+              <Text style={[styles.text, { fontSize: 16 }]}>Log Out</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </SafeAreaView>
 
       {loading ? (
@@ -73,7 +111,7 @@ export default function HomeScreen() {
           contentContainerStyle={{ paddingBottom: 10 }}
         >
           {/* Random Recipes Carousel */}
-          { random.length>0 && <RandomRecipes data={random} /> }
+          {random.length > 0 && <RandomRecipes data={random} />}
 
           {/* New Recipes Row */}
           <RecipeList title="New" data={newRecipe} />
