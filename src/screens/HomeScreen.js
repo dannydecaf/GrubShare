@@ -24,16 +24,29 @@ export default function HomeScreen() {
   const [random, setRandom] = useState([1, 2, 3]);
   const [newRecipe, setNewRecipe] = useState([1, 2, 3]);
   const [bestRated, setBestRated] = useState([1, 2, 3]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(()=>{
     getRandomRecipes();
   },[])
 
-  const getRandomRecipes = async ()=>{
-    const data = await fetchRandomRecipes();
-    console.log('got random recipes: ',data)
+  const getRandomRecipes = async () => {
+    try {
+      const data = await fetchRandomRecipes();
+      console.log("Recipe Data: ", data);
+      console.log(data.recipes[0].image) 
+      // Log the recipe data structure
+      if (data && data.recipes) {
+        // Extract image URLs from the data and pass them to the RandomRecipes component
+        const imageUrls = data.recipes.map(recipe => recipe.image);
+        setRandom(data.recipes);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching random recipes:', error);
+      setLoading(false); // Make sure to set loading to false in case of an error
+    }
   }
 
   return (
@@ -60,7 +73,7 @@ export default function HomeScreen() {
           contentContainerStyle={{ paddingBottom: 10 }}
         >
           {/* Random Recipes Carousel */}
-          <RandomRecipes data={random} />
+          { random.length>0 && <RandomRecipes data={random} /> }
 
           {/* New Recipes Row */}
           <RecipeList title="New" data={newRecipe} />
