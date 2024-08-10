@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { styles } from '../theme'; // Import the styles from the theme
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigation = useNavigation();
 
     const handleRegister = () => {
-        // Handle registration logic here
-        console.log('Register with:', email, password);
+        // Registration logic to be included here after Firebase is brought in
+        // On successful registration, navigate to HomeScreen
+        navigation.navigate('Home');
     };
 
     return (
@@ -22,7 +25,7 @@ export default function RegisterScreen({ navigation }) {
                 autoCapitalize="none"
                 placeholder="Email"
                 placeholderTextColor="#9ca3af"
-                style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }}
+                style={[styles.text, { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }]}
             />
             <TextInput
                 value={password}
@@ -30,7 +33,7 @@ export default function RegisterScreen({ navigation }) {
                 secureTextEntry
                 placeholder="Password"
                 placeholderTextColor="#9ca3af"
-                style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }}
+                style={[styles.text, { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }]}
             />
             <TouchableOpacity style={{ padding: 16, backgroundColor: '#fff', borderRadius: 4, alignItems: 'center' }} onPress={handleRegister}>
                 <Text style={[styles.text, { fontSize: 16, fontWeight: 'bold' }]}>Register</Text>

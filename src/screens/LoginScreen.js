@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { styles } from '../theme'; // Import the styles from the theme
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigation = useNavigation();
 
-    const handleLogin = () => {
-        // Handle login logic here
-        console.log('Login with:', email, password);
+    const handleLogin = async () => {
+        try {
+            // Attempt to log user in
+            // Dummy data to be replaced and logic to be added once Firebase is brought in
+            if (email === "test@example.com" && password === "password123") {
+                navigation.navigate('Home');
+            } else {
+                throw new Error('Invalid email or password');
+            }
+        } catch (err) {
+            // Set the error message for display
+            setError(err.message);
+        }
     };
 
     return (
@@ -22,7 +34,7 @@ export default function LoginScreen({ navigation }) {
                 autoCapitalize="none"
                 placeholder="Email"
                 placeholderTextColor="#9ca3af"
-                style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }}
+                style={[styles.text, { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }]}
             />
             <TextInput
                 value={password}
@@ -30,12 +42,12 @@ export default function LoginScreen({ navigation }) {
                 secureTextEntry
                 placeholder="Password"
                 placeholderTextColor="#9ca3af"
-                style={{ borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }}
+                style={[styles.text, { borderWidth: 1, borderColor: '#ccc', padding: 8, borderRadius: 4, marginBottom: 12, backgroundColor: '#fff' }]}
             />
+            {error ? <Text style={{ color: 'red', marginBottom: 16, textAlign: 'center' }}>{error}</Text> : null}
             <TouchableOpacity style={{ padding: 16, backgroundColor: '#fff', borderRadius: 4, alignItems: 'center' }} onPress={handleLogin}>
                 <Text style={[styles.text, { fontSize: 16, fontWeight: 'bold' }]}>Login</Text>
             </TouchableOpacity>
-            {error ? <Text style={{ color: 'red', marginTop: 8, textAlign: 'center' }}>{error}</Text> : null}
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={[styles.text, { textAlign: 'center', marginTop: 16 }]}>Don't have an account? Register here</Text>
             </TouchableOpacity>
