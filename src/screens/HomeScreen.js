@@ -4,6 +4,7 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +21,7 @@ import Loading from "../components/loading";
 import { fetchRandomRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
+
 export default function HomeScreen() {
   const [random, setRandom] = useState([1, 2, 3]);
   const [newRecipe, setNewRecipe] = useState([1, 2, 3]);
@@ -28,35 +30,34 @@ export default function HomeScreen() {
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(()=>{
+  useEffect(() => {
     getRandomRecipes();
-  },[])
+  }, []);
 
   const getRandomRecipes = async () => {
     try {
       const data = await fetchRandomRecipes();
       console.log("Recipe Data: ", data);
-      console.log(data.recipes[0].image) 
+      console.log(data.recipes[0].image); 
       // Log the recipe data structure
       if (data && data.recipes) {
         // Extract image URLs from the data and pass them to the RandomRecipes component
-        const imageUrls = data.recipes.map(recipe => recipe.image);
+        const imageUrls = data.recipes.map((recipe) => recipe.image);
         setRandom(data.recipes);
       }
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching random recipes:', error);
+      console.error("Error fetching random recipes:", error);
       setLoading(false); // Make sure to set loading to false in case of an error
     }
-  }
+  };
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
-    console.log("Menu visibility toggled:", menuVisible);
   };
 
   const handleLogout = () => {
-    console.log("Log Out button pressed");
+    setMenuVisible(false); 
     // Redirect to the Login screen
     navigation.navigate("Login");
   };
@@ -67,7 +68,7 @@ export default function HomeScreen() {
       <SafeAreaView className={ios ? "-mb-2" : "mb-3"}>
         <StatusBar style="light" />
         <View className="flex-row justify-between items-center mx-4">
-          {/* Hamburger menu with dropdown */}
+          {/* Hamburger menu with modal */}
           <TouchableOpacity onPress={toggleMenu}>
             <Bars3CenterLeftIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
@@ -78,30 +79,41 @@ export default function HomeScreen() {
             <MagnifyingGlassIcon size="30" strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
+      </SafeAreaView>
 
-        {/* Dropdown menu for logout */}
-        {menuVisible && (
+      {/* Modal for dropdown menu */}
+      <Modal
+        transparent={true}
+        visible={menuVisible}
+        animationType="slide"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+            justifyContent: "flex-start",
+            paddingTop: ios ? 80 : 100,
+            paddingHorizontal: 10,
+          }}
+          activeOpacity={1}
+          onPressOut={() => setMenuVisible(false)}
+        >
           <View
-            style={[
-              styles.background,
-              {
-                position: "absolute",
-                top: ios ? 80 : 100,
-                left: 10,
-                right: 10,
-                backgroundColor: "rgba(51, 51, 51, 0.9)",
-                padding: 15,
-                borderRadius: 8,
-                zIndex: 10, // Ensure this is on top of other elements
-              },
-            ]}
+            style={{
+              backgroundColor: "#333", // Darker background for dropdown
+              padding: 15,
+              borderRadius: 8,
+            }}
           >
             <TouchableOpacity onPress={handleLogout}>
-              <Text style={[styles.text, { fontSize: 16 }]}>Log Out</Text>
+              <Text style={[styles.text, { fontSize: 16, color: "white" }]}>
+                Log Out
+              </Text>
             </TouchableOpacity>
           </View>
-        )}
-      </SafeAreaView>
+        </TouchableOpacity>
+      </Modal>
 
       {loading ? (
         <Loading />
@@ -123,3 +135,4 @@ export default function HomeScreen() {
     </View>
   );
 }
+
