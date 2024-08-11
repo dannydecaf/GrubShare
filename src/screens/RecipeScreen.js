@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Ingredients from "../components/ingredients";
 import RecipeList from '../components/recipeList';
 import Loading from "../components/loading";
+import { fetchRecipeDetails, fetchSimilarRecipes } from "../../api/spoonacular";
 
 var { width, height } = Dimensions.get("window");
 const ios = Platform.OS === "ios";
@@ -28,11 +29,32 @@ export default function RecipeScreen() {
   const navigation = useNavigation();
   const [ingredients , setIngredients] = useState([1,2,3,4,5]);
   const [similarRecipes , setSimilarRecipes] = useState([1,2,3,4,5]);
+  const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
-  let recipeName = "Spaghetti Carbonara";
+
   useEffect(() => {
-    //Call the Recipe details API
-  }, [item]);
+    fetchRecipeData(item.id);
+  }, [item]); //Call the Recipe data API
+
+  const fetchRecipeData = async (recipeId) => {
+    try {
+      setLoading(true);
+      const details = await fetchRecipeDetails(recipeId);
+      const similar = await fetchSimilarRecipes(recipeId);
+
+      setRecipeDetails(details);
+      setIngredients(details.extendedIngredients || []);
+      setSimilarRecipes(similar || []);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching recipe data: ", error);
+      setLoading(false);
+    }
+  };
+
+  if (loading || !recipeDetails) {
+    return <Loading />;
+  }
 
   return (
     <ScrollView
@@ -61,15 +83,11 @@ export default function RecipeScreen() {
             />
           </TouchableOpacity>
         </SafeAreaView>
-        {
-          loading? (
-            <Loading />
-          ):(
-            <View>
-            <Image
-              source={require("../assets/carbonara.jpg")}
-              style={{ width, height: height * 0.55 }}
-            />
+        <View>
+          <Image
+            source={{ uri: recipeDetails.image }}
+            style={{ width, height: height * 0.55 }}
+          />
             <LinearGradient
               colors={["transparent", "rgba(23,23,23,0.8)", "rgba(23,23,23,1)"]}
               style={{ width, height: height * 0.4 }}
@@ -78,47 +96,46 @@ export default function RecipeScreen() {
               className="absolute bottom-0"
             />
           </View>
-          )
-        }
-      </View>
+          </View>
       {/* Recipe Details */}
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         {/* Dish */}
         <Text className="text-white text-center text-3xl font-bold tracking-wider">
-          {recipeName}
+        {recipeDetails.title}
         </Text>
         {/* Upload Date, Preparation Time */}
         <Text className="text-neutral-400 font-semibold text-base text-center">
-          25/02/2022 • Prep: 35 mins
+        {new Date(recipeDetails.createdAt).toLocaleDateString()} • Prep:{" "}
+          {recipeDetails.readyInMinutes} mins
         </Text>
 
         {/* Cuisine Type */}
           <Text className="text-neutral-400 font-semibold text-base text-center">
-            Italian
+          {recipeDetails.cuisines.join(", ")}
           </Text>
           <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full">
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold text-lg">kcal</Text>
-              <Text className="text-neutral-300 text-lg">655</Text>
+              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Calories")?.amount || 0)}</Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold text-lg">fat</Text>
-              <Text className="text-neutral-300 text-lg">31g</Text>
+              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Fat")?.amount || 0)}g</Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold text-lg">carbs</Text>
-              <Text className="text-neutral-300 text-lg">66g</Text>
+              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Carbohydrates")?.amount || 0)}g</Text>
             </View>
             <View className="px-2 items-center">
               <Text className="text-white font-semibold text-lg">protein</Text>
-              <Text className="text-neutral-300 text-lg">32g</Text>
+              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Protein")?.amount || 0)}g</Text>
             </View>
           </View>
         {/* Ingredients */}
         <Ingredients navigation={navigation} ingredients={ingredients}/>
         {/* Description */}
           <Text className="text-neutral-400 mx-4 tracking-wide">
-          Discover how to make traditional spaghetti carbonara. This classic Italian pasta dish combines a silky cheese sauce with crisp pancetta and black pepper.
+          {recipeDetails.summary.replace(/<\/?[^>]+(>|$)/g, "")}
           </Text>
       </View>
       {/* Similar Recipes*/}
