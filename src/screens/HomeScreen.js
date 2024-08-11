@@ -15,16 +15,17 @@ import {
 } from "react-native-heroicons/outline";
 import { styles } from "../theme";
 import RandomRecipes from "../components/randomRecipes";
+import LatestRecipes from "../components/latestRecipes";
 import RecipeList from "../components/recipeList";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchRandomRecipes } from "../../api/spoonacular";
+import { fetchRandomRecipes, fetchLatestRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
 export default function HomeScreen() {
   const [random, setRandom] = useState([1, 2, 3]);
-  const [newRecipe, setNewRecipe] = useState([1, 2, 3]);
+  const [latest, setLatest] = useState([1, 2, 3]);
   const [bestRated, setBestRated] = useState([1, 2, 3]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -32,6 +33,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     getRandomRecipes();
+    getLatestRecipes();
   }, []);
 
   const getRandomRecipes = async () => {
@@ -51,6 +53,30 @@ export default function HomeScreen() {
       setLoading(false); // Make sure to set loading to false in case of an error
     }
   };
+
+  const getLatestRecipes = async () => {
+    try {
+      const data = await fetchLatestRecipes();
+      console.log("Latest Recipes Data: ", data);
+  
+      // Log  image URL of the first latest recipe, if available
+      if (data && data.results && data.results.length > 0) {
+        console.log(data.results[0].image); 
+      }
+  
+      if (data && data.results) {
+        // Extract image URLs from the data and pass them to the LatestRecipes component
+        const imageUrls = data.results.map((recipe) => recipe.image);
+        setLatest(data.results);
+      }
+  
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching latest recipes:", error);
+      setLoading(false); // Make sure to set loading to false in case of an error
+    }
+  };
+  
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -125,8 +151,8 @@ export default function HomeScreen() {
           {/* Random Recipes Carousel */}
           {random.length > 0 && <RandomRecipes data={random} />}
 
-          {/* New Recipes Row */}
-          <RecipeList title="New" data={newRecipe} />
+          {/* Latest Recipes Carousel */}
+          {latest.length > 0 && <LatestRecipes data={latest} />}
 
           {/* Top Rated Recipes Row */}
           <RecipeList title="Top Rated" data={bestRated} />
