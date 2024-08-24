@@ -12,7 +12,7 @@ export default function PopularRecipes({ data }) {
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">Popular Recipes</Text>
-        <TouchableOpacity onPress={() => {/* Handle See All navigation */}}>
+        <TouchableOpacity onPress={() => navigation.navigate('PopularRecipesScreen')}>
           <Text style={styles.text} className="text-lg">See All</Text>
         </TouchableOpacity>
       </View>

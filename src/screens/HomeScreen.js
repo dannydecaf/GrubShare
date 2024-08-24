@@ -71,6 +71,10 @@ export default function HomeScreen() {
     navigation.navigate("Login");
   };
 
+  const navigateToSeeAll = (screen) => {
+    navigation.navigate(screen);
+  };
+
   return (
     <View className="flex-1 bg-neutral-800">
       {/* search bar and logo */}
@@ -135,18 +139,18 @@ export default function HomeScreen() {
           {featured.length > 0 && <FeaturedRecipes data={featured} />}
 
           {/* Popular Recipes Row */}
-          <PopularRecipes data={popular} />
+          <PopularRecipes data={popular} seeAll={() => navigateToSeeAll('PopularRecipesScreen')} />
 
           {/* Healthy Recipes Carousel */}
-          {healthy.length > 0 && <HealthyRecipes data={healthy} />}
+          {healthy.length > 0 && <HealthyRecipes data={healthy} seeAll={() => navigateToSeeAll('HealthyRecipesScreen')} />}
 
           {/* Budget-Friendly Recipes Carousel */}
           {budgetFriendly.length > 0 && (
-            <BudgetFriendlyRecipes data={budgetFriendly} />
+            <BudgetFriendlyRecipes data={budgetFriendly} seeAll={() => navigateToSeeAll('BudgetFriendlyRecipesScreen')} />
           )}
 
             {/* Low Calorie Recipes Carousel */}
-            {lowCalorie.length > 0 && <LowCalorieRecipes data={lowCalorie} />}
+            {lowCalorie.length > 0 && <LowCalorieRecipes data={lowCalorie} seeAll={() => navigateToSeeAll('LowCalorieRecipesScreen')} />}
         </ScrollView>
       )}
     </View>
