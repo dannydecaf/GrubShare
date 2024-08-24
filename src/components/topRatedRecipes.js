@@ -5,19 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-export default function LatestRecipes({ data }) {
+export default function TopRatedRecipes({ data }) {
   const navigation = useNavigation();
 
   const handleClick = (item) => {
     navigation.navigate('Recipe', item);
   };
-
-  // Log image URLs
-  if (data && data.length > 0) {
-    data.forEach((recipe, index) => {
-      console.log(`Image URL for Latest Recipe ${index + 1}: ${recipe.image}`);
-    });
-  }
 
   if (!data || data.length === 0) {
     return null;
@@ -25,7 +18,7 @@ export default function LatestRecipes({ data }) {
 
   return (
     <View style={{ marginBottom: 8 }}>
-      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Latest Recipes</Text>
+      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Top Rated</Text>
       <Carousel
         data={data}
         renderItem={({ item }) => (
@@ -42,7 +35,7 @@ export default function LatestRecipes({ data }) {
 }
 
 const RecipeCard = ({ item, handleClick }) => {
-  const imageUrl = item.image;
+  const imageUrl = item.image; // Assuming item.image contains the URL of the image
 
   return (
     <TouchableWithoutFeedback onPress={() => handleClick(item)}>
@@ -52,7 +45,7 @@ const RecipeCard = ({ item, handleClick }) => {
           style={{
             width: width * 0.6,
             height: height * 0.4,
-            borderRadius: 20,
+            borderRadius: 20, // Adjust border radius as needed
           }}
         />
       ) : (
@@ -62,4 +55,4 @@ const RecipeCard = ({ item, handleClick }) => {
       )}
     </TouchableWithoutFeedback>
   );
-}
+};

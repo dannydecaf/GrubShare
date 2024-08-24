@@ -15,68 +15,44 @@ import {
 } from "react-native-heroicons/outline";
 import { styles } from "../theme";
 import RandomRecipes from "../components/randomRecipes";
-import LatestRecipes from "../components/latestRecipes";
-import RecipeList from "../components/recipeList";
+import PopularRecipes from "../components/popularRecipes";
+import TopRatedRecipes from '../components/topRatedRecipes';
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchRandomRecipes, fetchLatestRecipes } from "../../api/spoonacular";
+import { fetchRandomRecipes, fetchPopularRecipes, fetchTopRatedRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
 export default function HomeScreen() {
-  const [random, setRandom] = useState([1, 2, 3]);
-  const [latest, setLatest] = useState([1, 2, 3]);
-  const [bestRated, setBestRated] = useState([1, 2, 3]);
+  const [random, setRandom] = useState([]);
+  const [popular, setPopular] = useState([]);
+  const [topRated, setTopRated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
-    getRandomRecipes();
-    getLatestRecipes();
+    getRecipes();
   }, []);
 
-  const getRandomRecipes = async () => {
+  const getRecipes = async () => {
     try {
-      const data = await fetchRandomRecipes();
-      console.log("Recipe Data: ", data);
-      console.log(data.recipes[0].image); 
-      // Log the recipe data structure
-      if (data && data.recipes) {
-        // Extract image URLs from the data and pass them to the RandomRecipes component
-        const imageUrls = data.recipes.map((recipe) => recipe.image);
-        setRandom(data.recipes);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching random recipes:", error);
-      setLoading(false); // Make sure to set loading to false in case of an error
-    }
-  };
+      setLoading(true);
 
-  const getLatestRecipes = async () => {
-    try {
-      const data = await fetchLatestRecipes();
-      console.log("Latest Recipes Data: ", data);
-  
-      // Log  image URL of the first latest recipe, if available
-      if (data && data.results && data.results.length > 0) {
-        console.log(data.results[0].image); 
-      }
-  
-      if (data && data.results) {
-        // Extract image URLs from the data and pass them to the LatestRecipes component
-        const imageUrls = data.results.map((recipe) => recipe.image);
-        setLatest(data.results);
-      }
-  
+      const randomData = await fetchRandomRecipes();
+      const popularData = await fetchPopularRecipes();
+      const topRatedData = await fetchTopRatedRecipes();
+
+      setRandom(randomData.recipes || []);
+      setPopular(popularData.results || []);
+      setTopRated(topRatedData.results || []);
+
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching latest recipes:", error);
-      setLoading(false); // Make sure to set loading to false in case of an error
+      console.error("Error fetching recipes:", error);
+      setLoading(false);
     }
   };
-  
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -84,7 +60,6 @@ export default function HomeScreen() {
 
   const handleLogout = () => {
     setMenuVisible(false); 
-    // Redirect to the Login screen
     navigation.navigate("Login");
   };
 
@@ -151,14 +126,13 @@ export default function HomeScreen() {
           {/* Random Recipes Carousel */}
           {random.length > 0 && <RandomRecipes data={random} />}
 
-          {/* Latest Recipes Carousel */}
-          {latest.length > 0 && <LatestRecipes data={latest} />}
+          {/* Popular Recipes Row */}
+          <PopularRecipes data={popular} />
 
-          {/* Top Rated Recipes Row */}
-          <RecipeList title="Top Rated" data={bestRated} />
+          {/* Top Rated Recipes Carousel */}
+          {topRated.length > 0 && <TopRatedRecipes data={topRated} />}
         </ScrollView>
       )}
     </View>
   );
 }
-
