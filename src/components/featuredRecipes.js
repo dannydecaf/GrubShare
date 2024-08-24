@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-export default function RandomRecipes({ data }) {
+export default function FeaturedRecipes({ data }) {
   const navigation = useNavigation();
 
   const handleClick = (item) => {
@@ -27,7 +27,7 @@ export default function RandomRecipes({ data }) {
 
   return (
     <View style={{ marginBottom: 8 }}>
-      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Random</Text>
+      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Featured</Text>
       <Carousel
         data={data}
         renderItem={({ item }) => (
@@ -55,6 +55,7 @@ const RecipeCard = ({ item, handleClick }) => {
             width: width * 0.6,
             height: height * 0.4,
             borderRadius: 20, // Adjust border radius as needed
+            resizeMode: 'cover',
           }}
         />
       ) : (

@@ -5,7 +5,7 @@ import { apiKey } from '../src/constants';
 // Endpoints
 
 const apiBaseUrl = 'https://api.spoonacular.com';
-const randomRecipesEndpoint = `${apiBaseUrl}/recipes/random?number=3&apiKey=${apiKey}`;
+const featuredRecipesEndpoint = `${apiBaseUrl}/recipes/random?number=3&apiKey=${apiKey}`;
 const popularRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?sort=popularity&number=10&apiKey=${apiKey}`;
 const recipeDetailsEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/information?includeNutrition=true&apiKey=${apiKey}`;
 const similarRecipesEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/similar?apiKey=${apiKey}`;
@@ -31,8 +31,8 @@ const apiCall = async (endpoint, params)=>{
 
 }
 
-export const fetchRandomRecipes = ()=> {
-    return apiCall(randomRecipesEndpoint);
+export const fetchFeaturedRecipes = ()=> {
+    return apiCall(featuredRecipesEndpoint);
 }
 
 export const fetchPopularRecipes = ()=> {

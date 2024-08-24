@@ -14,18 +14,18 @@ import {
   MagnifyingGlassIcon,
 } from "react-native-heroicons/outline";
 import { styles } from "../theme";
-import RandomRecipes from "../components/randomRecipes";
+import FeaturedRecipes from "../components/featuredRecipes";
 import PopularRecipes from "../components/popularRecipes";
 import HealthyRecipes from '../components/healthyRecipes';
 import BudgetFriendlyRecipes from '../components/budgetFriendlyRecipes';
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchRandomRecipes, fetchPopularRecipes, fetchHealthyRecipes, fetchBudgetFriendlyRecipes } from "../../api/spoonacular";
+import { fetchFeaturedRecipes, fetchPopularRecipes, fetchHealthyRecipes, fetchBudgetFriendlyRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
 export default function HomeScreen() {
-  const [random, setRandom] = useState([]);
+  const [featured, setFeatured] = useState([]);
   const [popular, setPopular] = useState([]);
   const [healthy, setHealthy] = useState([]);
   const [budgetFriendly, setBudgetFriendly] = useState([]);
@@ -41,12 +41,12 @@ export default function HomeScreen() {
     try {
       setLoading(true);
 
-      const randomData = await fetchRandomRecipes();
+      const featuredData = await fetchFeaturedRecipes();
       const popularData = await fetchPopularRecipes();
       const healthyData = await fetchHealthyRecipes();
       const budgetFriendlyData = await fetchBudgetFriendlyRecipes();
 
-      setRandom(randomData.recipes || []);
+      setFeatured(featuredData.recipes || []);
       setPopular(popularData.results || []);
       setHealthy(healthyData.results || []);
       setBudgetFriendly(budgetFriendlyData.results || []);
@@ -127,8 +127,8 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 10 }}
         >
-          {/* Random Recipes Carousel */}
-          {random.length > 0 && <RandomRecipes data={random} />}
+          {/* Featured Recipes Carousel */}
+          {featured.length > 0 && <FeaturedRecipes data={featured} />}
 
           {/* Popular Recipes Row */}
           <PopularRecipes data={popular} />
