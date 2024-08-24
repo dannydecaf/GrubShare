@@ -1,61 +1,47 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Dimensions,
-  Image,
-} from "react-native";
 import React from "react";
-import { styles } from "../theme";
+import { View, Text, ScrollView, Dimensions, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { styles } from "../theme";
 
 var { width, height } = Dimensions.get("window");
 
-export default function recipeList({ title, data, hideSeeAll }) {
+export default function BudgetFriendlyRecipes({ data }) {
   const navigation = useNavigation();
 
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
-        <Text className="text-white text-xl">{title}</Text>
-        {!hideSeeAll && (
-          <TouchableOpacity>
-            <Text style={styles.text} className="text-lg">
-              See All
-            </Text>
-          </TouchableOpacity>
-        )}
+        <Text className="text-white text-xl">Budget-Friendly Recipes</Text>
+        <TouchableOpacity onPress={() => {/* Handle See All navigation */}}>
+          <Text style={styles.text} className="text-lg">See All</Text>
+        </TouchableOpacity>
       </View>
-      {/* Recipe Row */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}
       >
         {data.map((item, index) => {
-          // Handle missing or undefined item and title
-          const recipeTitle = item?.title || "No Title"; // Check if item and title exist
-
-          // Construct image URL
-          const imageUrl = `https://spoonacular.com/recipeImages/${item.id}-636x393.${item.imageType}`;
+          const recipeTitle = item?.title || "No Title";
+          const imageUrl = item.image
+            ? `https://spoonacular.com/recipeImages/${item.id}-556x370.${item.imageType}`
+            : null;
 
           return (
-            <TouchableWithoutFeedback
+            <TouchableOpacity
               key={index}
-              onPress={() => navigation.push("Recipe", item)}
+              onPress={() => navigation.navigate("Recipe", { id: item.id })}
             >
               <View className="space-y-1 mr-4">
                 {imageUrl ? (
                   <Image
-                    source={{ uri: imageUrl }} // Use constructed image URL
+                    source={{ uri: imageUrl }}
                     className="rounded-3xl"
                     style={{
                       width: width * 0.33,
                       height: height * 0.22,
-                      resizeMode: "cover", // Proper scaling
-                      borderRadius: 15, // Ensure rounded corners
+                      resizeMode: "cover",
+                      borderRadius: 15,
                     }}
                   />
                 ) : (
@@ -73,16 +59,13 @@ export default function recipeList({ title, data, hideSeeAll }) {
                   </View>
                 )}
                 <Text className="text-neutral-300 ml-1">
-                  {recipeTitle.length > 14
-                    ? recipeTitle.slice(0, 14) + "..."
-                    : recipeTitle}
+                  {recipeTitle.length > 14 ? recipeTitle.slice(0, 14) + "..." : recipeTitle}
                 </Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
     </View>
   );
 }
-

@@ -17,9 +17,10 @@ import { styles } from "../theme";
 import RandomRecipes from "../components/randomRecipes";
 import PopularRecipes from "../components/popularRecipes";
 import HealthyRecipes from '../components/healthyRecipes';
+import BudgetFriendlyRecipes from '../components/budgetFriendlyRecipes';
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchRandomRecipes, fetchPopularRecipes, fetchHealthyRecipes } from "../../api/spoonacular";
+import { fetchRandomRecipes, fetchPopularRecipes, fetchHealthyRecipes, fetchBudgetFriendlyRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
@@ -27,6 +28,7 @@ export default function HomeScreen() {
   const [random, setRandom] = useState([]);
   const [popular, setPopular] = useState([]);
   const [healthy, setHealthy] = useState([]);
+  const [budgetFriendly, setBudgetFriendly] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
@@ -42,10 +44,12 @@ export default function HomeScreen() {
       const randomData = await fetchRandomRecipes();
       const popularData = await fetchPopularRecipes();
       const healthyData = await fetchHealthyRecipes();
+      const budgetFriendlyData = await fetchBudgetFriendlyRecipes();
 
       setRandom(randomData.recipes || []);
       setPopular(popularData.results || []);
       setHealthy(healthyData.results || []);
+      setBudgetFriendly(budgetFriendlyData.results || []);
 
       setLoading(false);
     } catch (error) {
@@ -131,6 +135,11 @@ export default function HomeScreen() {
 
           {/* Healthy Recipes Carousel */}
           {healthy.length > 0 && <HealthyRecipes data={healthy} />}
+
+          {/* Budget-Friendly Recipes Carousel */}
+          {budgetFriendly.length > 0 && (
+            <BudgetFriendlyRecipes data={budgetFriendly} />
+          )}
         </ScrollView>
       )}
     </View>

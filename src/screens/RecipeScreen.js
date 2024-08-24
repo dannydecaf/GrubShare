@@ -34,13 +34,15 @@ export default function RecipeScreen() {
 
   useEffect(() => {
     fetchRecipeData(item.id);
-  }, [item]); //Call the Recipe data API
+  }, [item]); // Call the Recipe data API
 
   const fetchRecipeData = async (recipeId) => {
     try {
       setLoading(true);
       const details = await fetchRecipeDetails(recipeId);
       const similar = await fetchSimilarRecipes(recipeId);
+
+      console.log("Similar Recipes Data: ", similar);
 
       setRecipeDetails(details);
       setIngredients(details.extendedIngredients || []);

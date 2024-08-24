@@ -10,6 +10,8 @@ const popularRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?sort=popular
 const recipeDetailsEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/information?includeNutrition=true&apiKey=${apiKey}`;
 const similarRecipesEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/similar?apiKey=${apiKey}`;
 const healthyRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?apiKey=${apiKey}&sort=healthiness&number=10`;
+const budgetFriendlyRecipesEndpoint = (maxPrice) => `${apiBaseUrl}/recipes/complexSearch?maxPricePerServing=${maxPrice}&number=10&apiKey=${apiKey}`;
+
 
 
 const apiCall = async (endpoint, params)=>{
@@ -39,6 +41,10 @@ export const fetchPopularRecipes = ()=> {
 
 export const fetchHealthyRecipes = () => {
     return apiCall(healthyRecipesEndpoint);
+};
+
+export const fetchBudgetFriendlyRecipes = (maxPrice) => {
+    return apiCall(budgetFriendlyRecipesEndpoint(maxPrice));
 };
 
 export const fetchRecipeDetails = (id) => {
