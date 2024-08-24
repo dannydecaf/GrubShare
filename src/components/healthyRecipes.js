@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-export default function TopRatedRecipes({ data }) {
+export default function HealthyRecipes({ data }) {
   const navigation = useNavigation();
 
   const handleClick = (item) => {
@@ -18,7 +18,7 @@ export default function TopRatedRecipes({ data }) {
 
   return (
     <View style={{ marginBottom: 8 }}>
-      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Top Rated</Text>
+      <Text style={{ color: 'white', fontSize: 20, marginLeft: 4, marginBottom: 5 }}>Health Kick</Text>
       <Carousel
         data={data}
         renderItem={({ item }) => (

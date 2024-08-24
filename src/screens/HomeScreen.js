@@ -16,17 +16,17 @@ import {
 import { styles } from "../theme";
 import RandomRecipes from "../components/randomRecipes";
 import PopularRecipes from "../components/popularRecipes";
-import TopRatedRecipes from '../components/topRatedRecipes';
+import HealthyRecipes from '../components/healthyRecipes';
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchRandomRecipes, fetchPopularRecipes, fetchTopRatedRecipes } from "../../api/spoonacular";
+import { fetchRandomRecipes, fetchPopularRecipes, fetchHealthyRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
 export default function HomeScreen() {
   const [random, setRandom] = useState([]);
   const [popular, setPopular] = useState([]);
-  const [topRated, setTopRated] = useState([]);
+  const [healthy, setHealthy] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
   const navigation = useNavigation();
@@ -41,11 +41,11 @@ export default function HomeScreen() {
 
       const randomData = await fetchRandomRecipes();
       const popularData = await fetchPopularRecipes();
-      const topRatedData = await fetchTopRatedRecipes();
+      const healthyData = await fetchHealthyRecipes();
 
       setRandom(randomData.recipes || []);
       setPopular(popularData.results || []);
-      setTopRated(topRatedData.results || []);
+      setHealthy(healthyData.results || []);
 
       setLoading(false);
     } catch (error) {
@@ -129,8 +129,8 @@ export default function HomeScreen() {
           {/* Popular Recipes Row */}
           <PopularRecipes data={popular} />
 
-          {/* Top Rated Recipes Carousel */}
-          {topRated.length > 0 && <TopRatedRecipes data={topRated} />}
+          {/* Healthy Recipes Carousel */}
+          {healthy.length > 0 && <HealthyRecipes data={healthy} />}
         </ScrollView>
       )}
     </View>
