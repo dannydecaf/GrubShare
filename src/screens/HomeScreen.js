@@ -18,9 +18,10 @@ import FeaturedRecipes from "../components/featuredRecipes";
 import PopularRecipes from "../components/popularRecipes";
 import HealthyRecipes from '../components/healthyRecipes';
 import BudgetFriendlyRecipes from '../components/budgetFriendlyRecipes';
+import LowCalorieRecipes from "../components/lowCalorieRecipes";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
-import { fetchFeaturedRecipes, fetchPopularRecipes, fetchHealthyRecipes, fetchBudgetFriendlyRecipes } from "../../api/spoonacular";
+import { fetchFeaturedRecipes, fetchPopularRecipes, fetchHealthyRecipes, fetchBudgetFriendlyRecipes, fetchLowCalorieRecipes } from "../../api/spoonacular";
 
 const ios = Platform.OS === "ios";
 
@@ -31,6 +32,7 @@ export default function HomeScreen() {
   const [budgetFriendly, setBudgetFriendly] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [lowCalorie, setLowCalorie] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -45,11 +47,13 @@ export default function HomeScreen() {
       const popularData = await fetchPopularRecipes();
       const healthyData = await fetchHealthyRecipes();
       const budgetFriendlyData = await fetchBudgetFriendlyRecipes();
+      const lowCalorieData = await fetchLowCalorieRecipes();
 
       setFeatured(featuredData.recipes || []);
       setPopular(popularData.results || []);
       setHealthy(healthyData.results || []);
       setBudgetFriendly(budgetFriendlyData.results || []);
+      setLowCalorie(lowCalorieData.results || []);
 
       setLoading(false);
     } catch (error) {
@@ -140,6 +144,9 @@ export default function HomeScreen() {
           {budgetFriendly.length > 0 && (
             <BudgetFriendlyRecipes data={budgetFriendly} />
           )}
+
+            {/* Low Calorie Recipes Carousel */}
+            {lowCalorie.length > 0 && <LowCalorieRecipes data={lowCalorie} />}
         </ScrollView>
       )}
     </View>
