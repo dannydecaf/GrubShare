@@ -12,9 +12,9 @@ export default function HealthyRecipes({ data }) {
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">Healthy Recipes</Text>
-        <TouchableOpacity onPress={() => {/* Handle See All navigation */}}>
-          <Text style={styles.text} className="text-lg">See All</Text>
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('HealthyRecipesScreen', { data })}>
+  <Text style={styles.text} className="text-lg">See All</Text>
+</TouchableOpacity>
       </View>
       <ScrollView
         horizontal

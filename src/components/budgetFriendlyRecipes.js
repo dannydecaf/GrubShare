@@ -12,7 +12,7 @@ export default function BudgetFriendlyRecipes({ data }) {
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">Budget-Friendly Recipes</Text>
-        <TouchableOpacity onPress={() => {/* Handle See All navigation */}}>
+        <TouchableOpacity onPress={() => navigation.navigate('BudgetFriendlyRecipesScreen', { data })}>
           <Text style={styles.text} className="text-lg">See All</Text>
         </TouchableOpacity>
       </View>
