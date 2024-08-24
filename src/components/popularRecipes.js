@@ -5,14 +5,14 @@ import { styles } from "../theme";
 
 var { width, height } = Dimensions.get("window");
 
-export default function PopularRecipes({ data }) {
+export default function popularRecipes({ data }) {
   const navigation = useNavigation();
 
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">Popular Recipes</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('PopularRecipesScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('PopularRecipesScreen', { data })}>
           <Text style={styles.text} className="text-lg">See All</Text>
         </TouchableOpacity>
       </View>
@@ -69,3 +69,4 @@ export default function PopularRecipes({ data }) {
     </View>
   );
 }
+
