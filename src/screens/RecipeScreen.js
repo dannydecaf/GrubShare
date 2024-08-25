@@ -15,7 +15,7 @@ import { HeartIcon } from "react-native-heroicons/solid";
 import { styles, theme } from "../theme";
 import { LinearGradient } from "expo-linear-gradient";
 import Ingredients from "../components/ingredients";
-import RecipeList from '../components/recipeList';
+import RecipeList from "../components/recipeList";
 import Loading from "../components/loading";
 import { fetchRecipeDetails, fetchSimilarRecipes } from "../../api/spoonacular";
 
@@ -27,8 +27,8 @@ export default function RecipeScreen() {
   const { params: item } = useRoute();
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
-  const [ingredients , setIngredients] = useState([1,2,3,4,5]);
-  const [similarRecipes , setSimilarRecipes] = useState([1,2,3,4,5]);
+  const [ingredients, setIngredients] = useState([1, 2, 3, 4, 5]);
+  const [similarRecipes, setSimilarRecipes] = useState([1, 2, 3, 4, 5]);
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -90,58 +90,88 @@ export default function RecipeScreen() {
             source={{ uri: recipeDetails.image }}
             style={{ width, height: height * 0.55 }}
           />
-            <LinearGradient
-              colors={["transparent", "rgba(23,23,23,0.8)", "rgba(23,23,23,1)"]}
-              style={{ width, height: height * 0.4 }}
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              className="absolute bottom-0"
-            />
-          </View>
-          </View>
+          <LinearGradient
+            colors={["transparent", "rgba(23,23,23,0.8)", "rgba(23,23,23,1)"]}
+            style={{ width, height: height * 0.4 }}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            className="absolute bottom-0"
+          />
+        </View>
+      </View>
       {/* Recipe Details */}
       <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
         {/* Dish */}
         <Text className="text-white text-center text-3xl font-bold tracking-wider">
-        {recipeDetails.title}
+          {recipeDetails.title}
         </Text>
-        {/* Upload Date, Preparation Time */}
+        {/* Servings, Preparation Time */}
         <Text className="text-neutral-400 font-semibold text-base text-center">
-        {new Date(recipeDetails.createdAt).toLocaleDateString()} • Prep:{" "}
+          Servings: {recipeDetails.servings} • Prep:{" "}
           {recipeDetails.readyInMinutes} mins
         </Text>
 
         {/* Cuisine Type */}
-          <Text className="text-neutral-400 font-semibold text-base text-center">
+        <Text className="text-neutral-400 font-semibold text-base text-center">
           {recipeDetails.cuisines.join(", ")}
-          </Text>
-          <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full">
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold text-lg">kcal</Text>
-              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Calories")?.amount || 0)}</Text>
-            </View>
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold text-lg">fat</Text>
-              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Fat")?.amount || 0)}g</Text>
-            </View>
-            <View className="border-r-2 border-r-neutral-400 px-2 items-center">
-              <Text className="text-white font-semibold text-lg">carbs</Text>
-              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Carbohydrates")?.amount || 0)}g</Text>
-            </View>
-            <View className="px-2 items-center">
-              <Text className="text-white font-semibold text-lg">protein</Text>
-              <Text className="text-neutral-300 text-lg">{Math.round(recipeDetails.nutrition.nutrients.find(n => n.name === "Protein")?.amount || 0)}g</Text>
-            </View>
+        </Text>
+        <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full">
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+            <Text className="text-white font-semibold text-lg">kcal</Text>
+            <Text className="text-neutral-300 text-lg">
+              {Math.round(
+                recipeDetails.nutrition.nutrients.find(
+                  (n) => n.name === "Calories"
+                )?.amount || 0
+              )}
+            </Text>
           </View>
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+            <Text className="text-white font-semibold text-lg">fat</Text>
+            <Text className="text-neutral-300 text-lg">
+              {Math.round(
+                recipeDetails.nutrition.nutrients.find((n) => n.name === "Fat")
+                  ?.amount || 0
+              )}
+              g
+            </Text>
+          </View>
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+            <Text className="text-white font-semibold text-lg">carbs</Text>
+            <Text className="text-neutral-300 text-lg">
+              {Math.round(
+                recipeDetails.nutrition.nutrients.find(
+                  (n) => n.name === "Carbohydrates"
+                )?.amount || 0
+              )}
+              g
+            </Text>
+          </View>
+          <View className="px-2 items-center">
+            <Text className="text-white font-semibold text-lg">protein</Text>
+            <Text className="text-neutral-300 text-lg">
+              {Math.round(
+                recipeDetails.nutrition.nutrients.find(
+                  (n) => n.name === "Protein"
+                )?.amount || 0
+              )}
+              g
+            </Text>
+          </View>
+        </View>
         {/* Ingredients */}
-        <Ingredients navigation={navigation} ingredients={ingredients}/>
+        <Ingredients navigation={navigation} ingredients={ingredients} />
         {/* Description */}
-          <Text className="text-neutral-400 mx-4 tracking-wide">
+        <Text className="text-neutral-400 mx-4 tracking-wide">
           {recipeDetails.summary.replace(/<\/?[^>]+(>|$)/g, "")}
-          </Text>
+        </Text>
       </View>
       {/* Similar Recipes*/}
-      <RecipeList title="Similar Recipes" hideSeeAll={true} data={similarRecipes} />
+      <RecipeList
+        title="Similar Recipes"
+        hideSeeAll={true}
+        data={similarRecipes}
+      />
     </ScrollView>
   );
 }
