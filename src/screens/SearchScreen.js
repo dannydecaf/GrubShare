@@ -13,14 +13,32 @@ import React, { useState } from "react";
 import { XMarkIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 import Loading from "../components/loading";
+import { searchRecipes } from "../../api/spoonacular";
 
 var { width, height } = Dimensions.get("window");
 
 export default function SearchScreen() {
   const navigation = useNavigation();
-  const [results, setResults] = useState([1, 2, 3, 4]);
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  let recipeName = "Spaghetti Carbonara";
+  const [query, setQuery] = useState("");
+
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const searchResults = await searchRecipes(query);
+
+      console.log("Search Results:", searchResults);
+
+      setResults(searchResults?.results || []);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error searching recipes:", error);
+      setResults([]);
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView className="bg-neutral-800 flex-1">
       <View className="mx-4 mb-3 flex-row justify-between items-center border border-neutral-500 rounded-full">
@@ -28,6 +46,9 @@ export default function SearchScreen() {
           placeholder="Search Recipe"
           placeholderTextColor={"lightgray"}
           className="pb-1 pl-6 flex-1 text-base font-semibold text-white tracking-wider"
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch}
         />
         <TouchableOpacity
           onPress={() => navigation.navigate("Home")}
@@ -39,9 +60,7 @@ export default function SearchScreen() {
       {/* Search Results */}
       {loading ? (
         <Loading />
-      ) : 
-      
-      results.length > 0 ? (
+      ) : results.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 15 }}
@@ -55,12 +74,12 @@ export default function SearchScreen() {
               return (
                 <TouchableWithoutFeedback
                   key={index}
-                  onPress={() => navigation.push("Recipe", item)}
+                  onPress={() => navigation.push("Recipe", { id: item.id })}
                 >
                   <View className="space-y-2 mb-4">
                     <Image
                       className="rounded-3xl"
-                      source={require("../assets/carbonara.jpg")}
+                      source={{ uri: `https://spoonacular.com/recipeImages/${item.id}-636x393.${item.imageType}` }}
                       style={{
                         width: width * 0.44,
                         height: height * 0.3,
@@ -71,9 +90,9 @@ export default function SearchScreen() {
                       className="text-neutral-300 ml-l"
                       style={{ textAlign: "center" }}
                     >
-                      {recipeName.length > 22
-                        ? recipeName.slice(0, 22) + "..."
-                        : recipeName}
+                      {item.title.length > 22
+                        ? item.title.slice(0, 22) + "..."
+                        : item.title}
                     </Text>
                   </View>
                 </TouchableWithoutFeedback>
