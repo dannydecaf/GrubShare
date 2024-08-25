@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { HeartIcon } from "react-native-heroicons/solid";
 import { styles } from "../theme";
@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import RecipeList from "../components/recipeList";
 import Loading from "../components/loading";
+import { fetchIngredientDetails } from "../../api/spoonacular";
 
 var { width, height } = Dimensions.get("window");
 const ios = Platform.OS == "ios";

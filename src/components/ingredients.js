@@ -14,10 +14,7 @@ export default function Ingredients({ ingredients }) {
         <TouchableOpacity
           key={index}
           onPress={() =>
-            navigation.navigate("IngredientScreen", {
-              ingredientId: ingredient.id,
-            })
-          }
+            navigation.navigate('Ingredient', { ingredientId: ingredient.id })}
           className="flex-row items-center mb-4"
         >
           <Image
