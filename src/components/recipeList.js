@@ -8,12 +8,11 @@ import {
   Image,
 } from "react-native";
 import React from "react";
-import { styles } from "../theme";
 import { useNavigation } from "@react-navigation/native";
 
 var { width, height } = Dimensions.get("window");
 
-export default function recipeList({ title, data, hideSeeAll }) {
+export default function recipeList({ title, data, hideSeeAll, onSeeAllPress }) {
   const navigation = useNavigation();
 
   return (
@@ -21,8 +20,8 @@ export default function recipeList({ title, data, hideSeeAll }) {
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">{title}</Text>
         {!hideSeeAll && (
-          <TouchableOpacity>
-            <Text style={styles.text} className="text-lg">
+          <TouchableOpacity onPress={onSeeAllPress}>
+            <Text style={{ color: 'yellow', fontSize: 16 }}>
               See All
             </Text>
           </TouchableOpacity>

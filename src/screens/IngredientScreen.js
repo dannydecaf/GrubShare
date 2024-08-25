@@ -16,7 +16,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import RecipeList from "../components/recipeList";
 import Loading from "../components/loading";
-import { fetchIngredientDetails } from "../../api/spoonacular";
+import { fetchIngredientDetails, fetchRecipesByIngredient } from "../../api/spoonacular";
 
 var { width, height } = Dimensions.get("window");
 const ios = Platform.OS == "ios";
@@ -36,8 +36,9 @@ export default function IngredientScreen() {
       try {
         setLoading(true);
         const details = await fetchIngredientDetails(id);
+        const recipes = await fetchRecipesByIngredient(details.name);
         setIngredientDetails(details);
-        setIngredientRecipes(details.recipes || []);
+        setIngredientRecipes(recipes || []);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching ingredient details: ", error);
@@ -163,6 +164,16 @@ export default function IngredientScreen() {
         <RecipeList
           title={"Recipes that use this ingredient"}
           data={ingredientRecipes}
+          hideSeeAll={false}
+          onSeeAllPress={() => {
+            if (ingredientRecipes.length > 0) {
+              navigation.navigate("IngredientRecipesScreen", {
+                ingredientRecipes,
+              });
+            } else {
+              console.log("No recipes found for this ingredient.");
+            }
+          }}
         />
       </View>
     </ScrollView>
