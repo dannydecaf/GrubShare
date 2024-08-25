@@ -165,6 +165,19 @@ export default function RecipeScreen() {
         <Text className="text-neutral-400 mx-4 tracking-wide">
           {recipeDetails.summary.replace(/<\/?[^>]+(>|$)/g, "")}
         </Text>
+        {/* Instructions */}
+        <View className="my-6 mx-4 space-y-2 bg-neutral-800 p-4 rounded-xl">
+          <Text className="text-xl text-white font-semibold">Instructions</Text>
+          {recipeDetails.analyzedInstructions && recipeDetails.analyzedInstructions.length > 0 ? (
+            recipeDetails.analyzedInstructions[0].steps.map((step, index) => (
+              <Text key={index} className="text-neutral-300 mb-2">
+                Step {index + 1}: {step.step}
+              </Text>
+            ))
+          ) : (
+            <Text className="text-neutral-400">No instructions available.</Text>
+          )}
+        </View>
       </View>
       {/* Similar Recipes*/}
       <RecipeList
