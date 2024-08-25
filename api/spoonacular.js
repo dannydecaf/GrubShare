@@ -12,7 +12,7 @@ const similarRecipesEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/similar?apiK
 const healthyRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?apiKey=${apiKey}&sort=healthiness&number=10`;
 const budgetFriendlyRecipesEndpoint = (maxPrice) => `${apiBaseUrl}/recipes/complexSearch?maxPricePerServing=${maxPrice}&number=10&apiKey=${apiKey}`;
 const lowCalorieRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?apiKey=${apiKey}&maxCalories=400&number=10`;
-const ingredientDetailsEndpoint = (id) => `${apiBaseUrl}/food/ingredients/${id}/information?amount=1@apiKey=${apiKey}`;
+const ingredientDetailsEndpoint = (id) => `${apiBaseUrl}/food/ingredients/${id}/information?amount=1&apiKey=${apiKey}`;
 
 
 

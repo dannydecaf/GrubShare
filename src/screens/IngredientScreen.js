@@ -32,25 +32,59 @@ export default function IngredientScreen() {
   const { ingredientId } = route.params;
 
   useEffect(() => {
-    getIngredientDetails(ingredientId);
-  }, [ingredientId]);
+    const getIngredientDetails = async (id) => {
+      try {
+        setLoading(true);
+        const details = await fetchIngredientDetails(id);
+        setIngredientDetails(details);
+        setIngredientRecipes(details.recipes || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching ingredient details: ", error);
+        setLoading(false);
+      }
+    };
 
-  const getIngredientDetails = async (id) => {
-    try {
-      setLoading(true);
-      const details = await fetchIngredientDetails(id);
-      setIngredientDetails(details);
-      setIngredientRecipes(details.recipes || []);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching ingredient details: ", error);
-      setLoading(false);
+    if (ingredientId) {
+      getIngredientDetails(ingredientId);
     }
-  };
+  }, [ingredientId]);
 
   if (loading || !ingredientDetails) {
     return <Loading />;
   }
+
+  const calculateNutritionalValuesPer10g = () => {
+    if (
+      !ingredientDetails ||
+      !ingredientDetails.nutrition ||
+      !ingredientDetails.nutrition.weightPerServing
+    ) {
+      return null;
+    }
+
+    const weightPerServing =
+      ingredientDetails.nutrition.weightPerServing.amount;
+    const factor = 10 / weightPerServing;
+
+    const nutrients = ingredientDetails.nutrition.nutrients.reduce(
+      (acc, nutrient) => {
+        if (
+          ["Calories", "Fat", "Carbohydrates", "Protein"].includes(
+            nutrient.name
+          )
+        ) {
+          acc[nutrient.name] = (nutrient.amount * factor).toFixed(2);
+        }
+        return acc;
+      },
+      {}
+    );
+
+    return nutrients;
+  };
+
+  const nutritionalValuesPer10g = calculateNutritionalValuesPer10g();
 
   return (
     <ScrollView
@@ -77,10 +111,18 @@ export default function IngredientScreen() {
       </SafeAreaView>
       {/* Ingredient Details */}
       <View>
+        {/* Ingredient Image */}
         <View>
           <Image
-            source={{ uri: ingredientDetails.image }}
-            style={{ width, height: height * 0.55 }}
+            source={{
+              uri: `https://spoonacular.com/cdn/ingredients_100x100/${ingredientDetails.image}`,
+            }}
+            style={{
+              width,
+              height: height * 0.35,
+              borderRadius: 15,
+              resizeMode: "contain",
+            }}
           />
           <LinearGradient
             colors={["transparent", "rgba(23,23,23,0.8)", "rgba(23,23,23,1)"]}
@@ -90,16 +132,33 @@ export default function IngredientScreen() {
             className="absolute bottom-0"
           />
         </View>
+
+        {/* Ingredient Name */}
         <View className="mt-6">
           <Text className="text-3xl text-white font-bold text-center">
             {ingredientDetails.name}
           </Text>
         </View>
-        <View className="my-6 mx-4 space-y-2">
-          <Text className="text-neutral-400 tracking-wide">
-            {ingredientDetails.description || "No description available."}
+
+        {/* Nutritional Information */}
+        <View className="my-6 mx-4 space-y-2 bg-neutral-800 p-4 rounded-xl">
+          <Text className="text-xl text-white font-semibold">
+            Nutritional Information (per 10g)
+          </Text>
+          <Text className="text-neutral-300">
+            Calories: {nutritionalValuesPer10g?.Calories || 0} kcal
+          </Text>
+          <Text className="text-neutral-300">
+            Fat: {nutritionalValuesPer10g?.Fat || 0} g
+          </Text>
+          <Text className="text-neutral-300">
+            Carbohydrates: {nutritionalValuesPer10g?.Carbohydrates || 0} g
+          </Text>
+          <Text className="text-neutral-300">
+            Protein: {nutritionalValuesPer10g?.Protein || 0} g
           </Text>
         </View>
+
         {/* Recipes that Ingredient is used in */}
         <RecipeList
           title={"Recipes that use this ingredient"}
