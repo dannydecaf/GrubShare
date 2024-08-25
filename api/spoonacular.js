@@ -12,6 +12,7 @@ const similarRecipesEndpoint = (id) => `${apiBaseUrl}/recipes/${id}/similar?apiK
 const healthyRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?apiKey=${apiKey}&sort=healthiness&number=10`;
 const budgetFriendlyRecipesEndpoint = (maxPrice) => `${apiBaseUrl}/recipes/complexSearch?maxPricePerServing=${maxPrice}&number=10&apiKey=${apiKey}`;
 const lowCalorieRecipesEndpoint = `${apiBaseUrl}/recipes/complexSearch?apiKey=${apiKey}&maxCalories=400&number=10`;
+const ingredientDetailsEndpoint = (id) => `${apiBaseUrl}/food/ingredients/${id}/information?amount=1@apiKey=${apiKey}`;
 
 
 
@@ -20,7 +21,7 @@ const apiCall = async (endpoint, params)=>{
         method: 'GET',
         url: endpoint,
         params: params? params: {}
-    }
+    };
 
     try{
         const response = await axios.request(options);
@@ -29,8 +30,7 @@ const apiCall = async (endpoint, params)=>{
         console.log('error: ',error);
         return {}
     }
-
-}
+};
 
 export const fetchFeaturedRecipes = ()=> {
     return apiCall(featuredRecipesEndpoint);
@@ -59,4 +59,8 @@ export const fetchRecipeDetails = (id) => {
 
 export const fetchSimilarRecipes = (id) => {
     return apiCall(similarRecipesEndpoint(id));
+};
+
+export const fetchIngredientDetails = (id) => {
+    return apiCall(ingredientDetailsEndpoint(id));
 };

@@ -27,14 +27,14 @@ export default function RecipeScreen() {
   const { params: item } = useRoute();
   const [isFavourite, toggleFavourite] = useState(false);
   const navigation = useNavigation();
-  const [ingredients, setIngredients] = useState([1, 2, 3, 4, 5]);
-  const [similarRecipes, setSimilarRecipes] = useState([1, 2, 3, 4, 5]);
+  const [ingredients, setIngredients] = useState([]);
+  const [similarRecipes, setSimilarRecipes] = useState([]);
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchRecipeData(item.id);
-  }, [item]); // Call the Recipe data API
+  }, [item]);
 
   const fetchRecipeData = async (recipeId) => {
     try {
