@@ -22,15 +22,32 @@ export default function SearchScreen() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  const handleSearch = async () => {
+  const handleSearch = async (reset = false) => {
+    if (reset) {
+      setOffset(0);
+      setHasMore(true);
+      setResults([]);
+    }
+
     setLoading(true);
     try {
-      const searchResults = await searchRecipes(query);
+      const searchResults = await searchRecipes(query, offset);
 
       console.log("Search Results:", searchResults);
+      if (searchResults.results && searchResults.results.length > 0) {
+        setResults((prevResults) => [...prevResults, ...searchResults.results]);
+        setOffset((prevOffset) => prevOffset + 20);
 
-      setResults(searchResults?.results || []);
+        if (searchResults.results.length < 20) {
+          setHasMore(false);
+        }
+      } else {
+        setHasMore(false);
+      }
+
       setLoading(false);
     } catch (error) {
       console.error("Error searching recipes:", error);
@@ -48,7 +65,7 @@ export default function SearchScreen() {
           className="pb-1 pl-6 flex-1 text-base font-semibold text-white tracking-wider"
           value={query}
           onChangeText={setQuery}
-          onSubmitEditing={handleSearch}
+          onSubmitEditing={() => handleSearch(true)}
         />
         <TouchableOpacity
           onPress={() => navigation.navigate("Home")}
@@ -79,7 +96,9 @@ export default function SearchScreen() {
                   <View className="space-y-2 mb-4">
                     <Image
                       className="rounded-3xl"
-                      source={{ uri: `https://spoonacular.com/recipeImages/${item.id}-636x393.${item.imageType}` }}
+                      source={{
+                        uri: `https://spoonacular.com/recipeImages/${item.id}-636x393.${item.imageType}`,
+                      }}
                       style={{
                         width: width * 0.44,
                         height: height * 0.3,
@@ -99,6 +118,14 @@ export default function SearchScreen() {
               );
             })}
           </View>
+          {hasMore && (
+            <TouchableOpacity
+              onPress={() => handleSearch(false)}
+              className="mt-4 mb-8"
+            >
+              <Text className="text-white text-center">Load More</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       ) : (
         <View className="flex-row justify-center">

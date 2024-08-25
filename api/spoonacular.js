@@ -71,6 +71,7 @@ export const fetchRecipesByIngredient = (ingredientName) => {
     return apiCall(recipesByIngredientEndpoint(ingredientName));
 };
 
-export const searchRecipes = (query) => {
-    return apiCall(searchRecipesEndpoint(query));
+export const searchRecipes = (query, offset = 0) => {
+    const endpoint = `${apiBaseUrl}/recipes/complexSearch?query=${query}&offset=${offset}&number=20&apiKey=${apiKey}`;
+    return apiCall(endpoint);
 }
