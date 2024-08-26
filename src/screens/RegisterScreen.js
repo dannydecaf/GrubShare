@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../theme'; // Import the styles from the theme
+import { registerUser } from '../firebase/auth';
 
 export default function RegisterScreen() {
     const [email, setEmail] = useState('');
@@ -9,10 +10,13 @@ export default function RegisterScreen() {
     const [error, setError] = useState('');
     const navigation = useNavigation();
 
-    const handleRegister = () => {
-        // Registration logic to be included here after Firebase is brought in
-        // On successful registration, navigate to HomeScreen
-        navigation.navigate('Home');
+    const handleRegister = async () => {
+        try {
+            await registerUser(email, password);
+            navigation.navigate('Home');
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
     return (

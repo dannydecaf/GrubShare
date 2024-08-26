@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../theme'; // Import the styles from the theme
+import { loginUser } from '../firebase/auth';
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
@@ -11,15 +12,9 @@ export default function LoginScreen() {
 
     const handleLogin = async () => {
         try {
-            // Attempt to log user in
-            // Dummy data to be replaced and logic to be added once Firebase is brought in
-            if (email === "test@example.com" && password === "password123") {
-                navigation.navigate('Home');
-            } else {
-                throw new Error('Invalid email or password');
-            }
+            await loginUser(email, password);
+            navigation.navigate('Home');
         } catch (err) {
-            // Set the error message for display
             setError(err.message);
         }
     };
