@@ -1,3 +1,4 @@
+// Imports
 import {
   View,
   Text,
@@ -19,43 +20,43 @@ import RecipeList from "../components/recipeList";
 import Loading from "../components/loading";
 import { fetchRecipeDetails, fetchSimilarRecipes } from "../../api/spoonacular";
 
-var { width, height } = Dimensions.get("window");
-const ios = Platform.OS === "ios";
-const topMargin = ios ? "" : "mt-3";
+var { width, height } = Dimensions.get("window"); // Getting device window dimensions for responsive design
+const ios = Platform.OS === "ios"; // Boolean to check if platform is iOS
+const topMargin = ios ? "" : "mt-3"; // Conditional top margin based on platform
 
-export default function RecipeScreen() {
-  const { params: item } = useRoute();
-  const [isFavourite, toggleFavourite] = useState(false);
-  const navigation = useNavigation();
-  const [ingredients, setIngredients] = useState([]);
-  const [similarRecipes, setSimilarRecipes] = useState([]);
-  const [recipeDetails, setRecipeDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
+export default function RecipeScreen() { // Main component for displaying detailed recipe information
+  const { params: item } = useRoute(); // Hook to access route object and parameters passed to this screen
+  const [isFavourite, toggleFavourite] = useState(false); // State to manage the favorite status
+  const navigation = useNavigation(); // Hook to access navigation object for screen transitions
+  const [ingredients, setIngredients] = useState([]); // State to store list of ingredients
+  const [similarRecipes, setSimilarRecipes] = useState([]); // State to store similar recipes
+  const [recipeDetails, setRecipeDetails] = useState(null); // State to store detailed recipe information
+  const [loading, setLoading] = useState(false); // State to manage loading indicator
 
   useEffect(() => {
-    fetchRecipeData(item.id);
+    fetchRecipeData(item.id); // Fetch recipe data when component mounts or when the item changes
   }, [item]);
 
+  // Function to fetch recipe details and similar recipes
   const fetchRecipeData = async (recipeId) => {
     try {
-      setLoading(true);
-      const details = await fetchRecipeDetails(recipeId);
-      const similar = await fetchSimilarRecipes(recipeId);
+      setLoading(true); // Show loading indicator
+      const details = await fetchRecipeDetails(recipeId); // Fetching detailed recipe information
+      const similar = await fetchSimilarRecipes(recipeId); // Fetching similar recipes
 
-      console.log("Similar Recipes Data: ", similar);
 
-      setRecipeDetails(details);
-      setIngredients(details.extendedIngredients || []);
-      setSimilarRecipes(similar || []);
-      setLoading(false);
+      setRecipeDetails(details); // Setting state with fetched recipe details
+      setIngredients(details.extendedIngredients || []); // Setting state with ingredients from recipe
+      setSimilarRecipes(similar || []); // Setting state with similar recipes
+      setLoading(false); // Hide loading indicator
     } catch (error) {
-      console.error("Error fetching recipe data: ", error);
-      setLoading(false);
+      console.error("Error fetching recipe data: ", error); // Log any errors during fetch
+      setLoading(false); // Hide loading indicator
     }
   };
 
   if (loading || !recipeDetails) {
-    return <Loading />;
+    return <Loading />; // Show loading indicator if data is still loading or not available
   }
 
   return (
@@ -64,30 +65,30 @@ export default function RecipeScreen() {
       className="flex-1 bg-neutral-900"
     >
       {/* Back Button & Recipe Picture */}
-      <View className="w-full">
+      <View className="w-full"> {/* Full-width container for the header and image */}
         <SafeAreaView
           className={
             "absolute z-20 w-full flex-row justify-between items-center px-4 " +
-            topMargin
+            topMargin // Adjust margin for iOS vs. other platforms
           }
         >
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.goBack()} // Navigates back to previous screen
             style={styles.background}
             className="rounded-xl p-1"
           >
-            <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" />
+            <ChevronLeftIcon size="28" strokeWidth={2.5} color="white" /> {/* Back arrow icon */}
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}>
+          <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}> {/* Toggles favorite status */}
             <HeartIcon
               size="35"
-              color={isFavourite ? theme.background : "white"}
+              color={isFavourite ? theme.background : "white"} // Changes color based on favorite status
             />
           </TouchableOpacity>
         </SafeAreaView>
-        <View>
+        <View> {/* Container for recipe image and overlay */}
           <Image
-            source={{ uri: recipeDetails.image }}
+            source={{ uri: recipeDetails.image }} // Displaying recipe image from details
             style={{ width, height: height * 0.55 }}
           />
           <LinearGradient
@@ -100,90 +101,90 @@ export default function RecipeScreen() {
         </View>
       </View>
       {/* Recipe Details */}
-      <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
-        {/* Dish */}
+      <View style={{ marginTop: -(height * 0.09) }} className="space-y-3"> {/* Offset to overlay details on the image */}
+        {/* Dish Name */}
         <Text className="text-white text-center text-3xl font-bold tracking-wider">
-          {recipeDetails.title}
+          {recipeDetails.title} {/* Displaying recipe title */}
         </Text>
-        {/* Servings, Preparation Time */}
+        {/* Servings and Preparation Time */}
         <Text className="text-neutral-400 font-semibold text-base text-center">
           Servings: {recipeDetails.servings} • Prep:{" "}
-          {recipeDetails.readyInMinutes} mins
+          {recipeDetails.readyInMinutes} mins {/* Displaying servings and preparation time */}
         </Text>
 
         {/* Cuisine Type */}
         <Text className="text-neutral-400 font-semibold text-base text-center">
-          {recipeDetails.cuisines.join(", ")}
+          {recipeDetails.cuisines.join(", ")} {/* Displaying cuisines */}
         </Text>
-        <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full">
-          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+        <View className="mx-3 p-4 mt-6 flex-row justify-between items-center bg-neutral-700 rounded-full"> {/* Container for nutritional information */}
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center"> {/* Calories */}
             <Text className="text-white font-semibold text-lg">kcal</Text>
             <Text className="text-neutral-300 text-lg">
               {Math.round(
                 recipeDetails.nutrition.nutrients.find(
                   (n) => n.name === "Calories"
-                )?.amount || 0
+                )?.amount || 0 // Fetching and displaying calories
               )}
             </Text>
           </View>
-          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center"> {/* Fat */}
             <Text className="text-white font-semibold text-lg">fat</Text>
             <Text className="text-neutral-300 text-lg">
               {Math.round(
                 recipeDetails.nutrition.nutrients.find((n) => n.name === "Fat")
-                  ?.amount || 0
+                  ?.amount || 0 // Fetching and displaying fat
               )}
               g
             </Text>
           </View>
-          <View className="border-r-2 border-r-neutral-400 px-2 items-center">
+          <View className="border-r-2 border-r-neutral-400 px-2 items-center"> {/* Carbohydrates */}
             <Text className="text-white font-semibold text-lg">carbs</Text>
             <Text className="text-neutral-300 text-lg">
               {Math.round(
                 recipeDetails.nutrition.nutrients.find(
                   (n) => n.name === "Carbohydrates"
-                )?.amount || 0
+                )?.amount || 0 // Fetching and displaying carbohydrates
               )}
               g
             </Text>
           </View>
-          <View className="px-2 items-center">
+          <View className="px-2 items-center"> {/* Protein */}
             <Text className="text-white font-semibold text-lg">protein</Text>
             <Text className="text-neutral-300 text-lg">
               {Math.round(
                 recipeDetails.nutrition.nutrients.find(
                   (n) => n.name === "Protein"
-                )?.amount || 0
+                )?.amount || 0 // Fetching and displaying protein
               )}
               g
             </Text>
           </View>
         </View>
-        {/* Ingredients */}
-        <Ingredients navigation={navigation} ingredients={ingredients} />
+        {/* Ingredients List */}
+        <Ingredients navigation={navigation} ingredients={ingredients} /> {/* Passing ingredients to the Ingredients component */}
         {/* Description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          {recipeDetails.summary.replace(/<\/?[^>]+(>|$)/g, "")}
+          {recipeDetails.summary.replace(/<\/?[^>]+(>|$)/g, "")} {/* Displaying recipe summary, removing any HTML tags */}
         </Text>
         {/* Instructions */}
-        <View className="my-6 mx-4 space-y-2 bg-neutral-800 p-4 rounded-xl">
+        <View className="my-6 mx-4 space-y-2 bg-neutral-800 p-4 rounded-xl"> {/* Container for recipe instructions */}
           <Text className="text-xl text-white font-semibold">Instructions</Text>
           {recipeDetails.analyzedInstructions && recipeDetails.analyzedInstructions.length > 0 ? (
-            recipeDetails.analyzedInstructions[0].steps.map((step, index) => (
+            recipeDetails.analyzedInstructions[0].steps.map((step, index) => ( // Mapping through recipe steps
               <Text key={index} className="text-neutral-300 mb-2">
-                Step {index + 1}: {step.step}
+                Step {index + 1}: {step.step} {/* Displaying each step */}
               </Text>
             ))
           ) : (
-            <Text className="text-neutral-400">No instructions available.</Text>
+            <Text className="text-neutral-400">No instructions available.</Text> // Message if no instructions are available
           )}
         </View>
       </View>
-      {/* Similar Recipes*/}
+      {/* Similar Recipes */}
       <RecipeList
-        title="Similar Recipes"
-        hideSeeAll={true}
-        data={similarRecipes}
+        title="Similar Recipes" // Title for the list
+        hideSeeAll={true} // Hiding "See All" button
+        data={similarRecipes} // Passing similar recipes to the RecipeList component
       />
     </ScrollView>
   );

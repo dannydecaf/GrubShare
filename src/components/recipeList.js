@@ -1,3 +1,4 @@
+// Imports
 import {
   View,
   Text,
@@ -12,15 +13,15 @@ import { useNavigation } from "@react-navigation/native";
 
 var { width, height } = Dimensions.get("window");
 
-export default function recipeList({ title, data, hideSeeAll, onSeeAllPress }) {
+export default function RecipeList({ title, data, hideSeeAll, onSeeAllPress }) {
   const navigation = useNavigation();
 
   return (
-    <View className="mb-8 space-y-4">
+    <View className="mb-8 space-y-4"> {/* Container for Recipe List section */}
       <View className="mx-4 flex-row justify-between items-center">
         <Text className="text-white text-xl">{title}</Text>
-        {!hideSeeAll && (
-          <TouchableOpacity onPress={onSeeAllPress}>
+        {!hideSeeAll && ( // Conditional rendering of 'See All' button
+          <TouchableOpacity onPress={onSeeAllPress}> {/* Calls a custom function when 'See All' is pressed */}
             <Text style={{ color: 'yellow', fontSize: 16 }}>
               See All
             </Text>
@@ -33,31 +34,31 @@ export default function recipeList({ title, data, hideSeeAll, onSeeAllPress }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}
       >
-        {data.map((item, index) => {
-          // Handle missing or undefined item and title
-          const recipeTitle = item?.title || "No Title"; // Check if item and title exist
-
-          // Construct image URL
+        {data.map((item, index) => { // Iterates over each recipe item in the data array
+          const recipeTitle = item?.title || "No Title"; // Fallback to 'No Title' if the title is missing
+          
+          // Construct image URL using recipe ID and image type
           const imageUrl = `https://spoonacular.com/recipeImages/${item.id}-636x393.${item.imageType}`;
 
           return (
             <TouchableWithoutFeedback
-              key={index}
-              onPress={() => navigation.push("Recipe", item)}
+              key={index} // Key prop to uniquely identify each recipe item
+              onPress={() => navigation.push("Recipe", item)} // Navigates to the 'Recipe' screen, passing the relevant item
             >
-              <View className="space-y-1 mr-4">
-                {imageUrl ? (
+              <View className="space-y-1 mr-4"> {/* Container for each recipe item with margin */}
+                {imageUrl ? ( // Checks if image URL exists
                   <Image
-                    source={{ uri: imageUrl }} // Use constructed image URL
+                    source={{ uri: imageUrl }}
                     className="rounded-3xl"
                     style={{
                       width: width * 0.33,
                       height: height * 0.22,
-                      resizeMode: "cover", // Proper scaling
-                      borderRadius: 15, // Ensure rounded corners
+                      resizeMode: "cover",
+                      borderRadius: 15,
                     }}
                   />
                 ) : (
+                  // Placeholder view for when no image is available
                   <View
                     style={{
                       width: width * 0.33,
@@ -68,10 +69,11 @@ export default function recipeList({ title, data, hideSeeAll, onSeeAllPress }) {
                       alignItems: "center",
                     }}
                   >
-                    <Text style={{ color: 'white' }}>No Image</Text>
+                    <Text style={{ color: 'white' }}>No Image</Text> {/* Text displayed when there's no image */}
                   </View>
                 )}
                 <Text className="text-neutral-300 ml-1">
+                  {/* Display recipe title, truncating if it is longer than 14 characters */}
                   {recipeTitle.length > 14
                     ? recipeTitle.slice(0, 14) + "..."
                     : recipeTitle}
@@ -84,4 +86,3 @@ export default function recipeList({ title, data, hideSeeAll, onSeeAllPress }) {
     </View>
   );
 }
-
