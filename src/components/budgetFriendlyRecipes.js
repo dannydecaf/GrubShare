@@ -1,95 +1,71 @@
-// Imports
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import React from "react";
+import { View, Text, ScrollView, Dimensions, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { fetchBudgetFriendlyRecipes } from '../../api/spoonacular';
+import { styles } from "../theme";
 
-const { width } = Dimensions.get("window"); // Getting device window width for responsive design
+var { width, height } = Dimensions.get("window");
 
-export default function BudgetFriendlyRecipesScreen() { // Main component for budget-friendly recipes screen
-  const navigation = useNavigation(); // Hook to access navigation object for screen transitions
-  const [recipes, setRecipes] = useState([]); // State to store the list of recipes
-  const [offset, setOffset] = useState(0); // State to manage pagination offset
-  const [hasMore, setHasMore] = useState(true); // State to determine if there are more recipes to load
-
-  useEffect(() => {
-    loadRecipes(); // Load recipes when component mounts
-  }, []);
-
-  // Function to load more recipes, managing pagination and checking for more data
-  const loadRecipes = async () => {
-    if (!hasMore) return; // If no more recipes, exit early
-
-    const newRecipes = await fetchBudgetFriendlyRecipes(offset); // Fetch new recipes using current offset
-    if (newRecipes.results.length > 0) { // Check if new recipes were returned
-      setRecipes(prevRecipes => [...prevRecipes, ...newRecipes.results]); // Append new recipes to existing list
-      setOffset(prevOffset => prevOffset + 10); // Increment offset for the next fetch
-      if (newRecipes.results.length < 10) setHasMore(false); // If fewer than 10 recipes were returned, there are no more to load
-    } else {
-      setHasMore(false); // No more recipes available
-    }
-  };
+export default function BudgetFriendlyRecipes({ data }) {
+  const navigation = useNavigation();
 
   return (
-    <ScrollView style={{ backgroundColor: "#121212" }}>
-      <View style={{ padding: 16 }}>
-        {/* Back Button */}
-        <View style={{ marginBottom: 16 }}> {/* Container for the back button */}
-          <TouchableOpacity
-            onPress={() => navigation.goBack()} // Navigates back to the previous screen
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
-              borderRadius: 10,
-              padding: 6,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" /> {/* Back arrow icon */}
-          </TouchableOpacity>
-        </View>
-        <Text style={{ color: "white", fontSize: 24, marginBottom: 16 }}>
-          Budget-Friendly Recipes
-        </Text> {/* Screen title */}
-        {recipes.map((item, index) => ( // Map through list of recipes to display each one
-          <TouchableOpacity
-            key={index} // Key prop to uniquely identify each recipe item
-            onPress={() => navigation.navigate("Recipe", { id: item.id })} // Navigates to the detailed recipe screen with the relevant recipe's ID
-            style={{ marginBottom: 16 }}
-          >
-            <Image
-              source={{
-                uri: `https://spoonacular.com/recipeImages/${item.id}-556x370.${item.imageType}`, // Displaying recipe image using constructed URL
-              }}
-              style={{
-                width: width * 0.9,
-                height: width * 0.5,
-                borderRadius: 15,
-              }}
-            />
-            <Text style={{ color: "white", fontSize: 18, marginTop: 8 }}>
-              {/* Display recipe title, truncating if it is longer than 30 characters */}
-              {item.title.length > 30
-                ? item.title.slice(0, 30) + "..."
-                : item.title}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        {hasMore && ( // Conditionally render 'Load More' button if more recipes to load
-          <TouchableOpacity onPress={loadRecipes}>
-            <Text style={{ color: 'yellow', textAlign: 'center', margin: 20 }}>Load More</Text> {/* Load more button */}
-          </TouchableOpacity>
-        )}
+    <View className="mb-8 space-y-4">
+      <View className="mx-4 flex-row justify-between items-center">
+        <Text className="text-white text-xl">Budget-Friendly Recipes</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('BudgetFriendlyRecipesScreen', { data })}>
+          <Text style={styles.text} className="text-lg">See All</Text>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+      >
+        {data.map((item, index) => {
+          const recipeTitle = item?.title || "No Title";
+          const imageUrl = item.image
+            ? `https://spoonacular.com/recipeImages/${item.id}-556x370.${item.imageType}`
+            : null;
+
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => navigation.navigate("Recipe", { id: item.id })}
+            >
+              <View className="space-y-1 mr-4">
+                {imageUrl ? (
+                  <Image
+                    source={{ uri: imageUrl }}
+                    className="rounded-3xl"
+                    style={{
+                      width: width * 0.33,
+                      height: height * 0.22,
+                      resizeMode: "cover",
+                      borderRadius: 15,
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: width * 0.33,
+                      height: height * 0.22,
+                      backgroundColor: "gray",
+                      borderRadius: 15,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ color: 'white' }}>No Image</Text>
+                  </View>
+                )}
+                <Text className="text-neutral-300 ml-1">
+                  {recipeTitle.length > 14 ? recipeTitle.slice(0, 14) + "..." : recipeTitle}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
-
